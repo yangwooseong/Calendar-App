@@ -1,0 +1,17 @@
+.time-range {
+  width: 200px;
+  height: 70px;
+  margin-left: 300px;
+  border: 1px solid black;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.left-arrow {
+  margin-left: 10px;
+  cursor: pointer;
+}
+.right-arrow {
+  margin-right: 10px;
+  cursor: pointer;
+}

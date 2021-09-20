@@ -1,9 +1,9 @@
-import Nav from './_components/Nav'
 import './index.scss'
+import MainPage from './_components/MainPage'
 
 class App {
   constructor($target: HTMLElement) {
-    const nav = new Nav($target)
+    const mainPage = new MainPage($target)
   }
 }
 

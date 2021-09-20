@@ -1,0 +1,16 @@
+.range-selector {
+  width: 200px;
+  height: 70px;
+  margin-right: 200px;
+  border: 1px solid black;
+  display: flex;
+
+  .left-button {
+    width: 100%;
+    cursor: pointer;
+  }
+  .right-button {
+    width: 100%;
+    cursor: pointer;
+  }
+}
