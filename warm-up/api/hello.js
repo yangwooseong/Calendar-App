@@ -14,7 +14,7 @@ let a_middleware_function = function (req, res, next) {
 app.use('/someroute', a_middleware_function)
 
 app.get('/', function (req, res) {
-  console.log(a)
+  console.log(2)
 })
 app.get('/someroute', function (req, res) {
   res.send('some route called')
