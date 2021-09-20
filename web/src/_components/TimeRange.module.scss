@@ -1,17 +1,22 @@
 .time-range {
-  width: 200px;
+  width: 300px;
   height: 70px;
-  margin-left: 300px;
-  border: 1px solid black;
+  border: 1px soid black;
+  font: normal 1.5rem bold;
+  color: #aaa;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 .left-arrow {
   margin-left: 10px;
+  margin-bottom: 3px;
   cursor: pointer;
+  font-weight: bold;
 }
 .right-arrow {
   margin-right: 10px;
+  margin-bottom: 3px;
   cursor: pointer;
+  font-weight: bold;
 }

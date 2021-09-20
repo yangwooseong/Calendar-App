@@ -1,16 +1,23 @@
 .range-selector {
   width: 200px;
-  height: 70px;
-  margin-right: 200px;
-  border: 1px solid black;
+  height: 45px;
+  border-radius: 5px;
+  position: absolute;
+  right: 0px;
+  border: 2px solid #ccc;
   display: flex;
 
-  .left-button {
+  @mixin twobuttons {
     width: 100%;
     cursor: pointer;
+    border: none;
+  }
+  .left-button {
+    @include twobuttons();
+    border-radius: 5px 0 0 5px;
   }
   .right-button {
-    width: 100%;
-    cursor: pointer;
+    @include twobuttons();
+    border-radius: 0 5px 5px 0;
   }
 }
