@@ -1,6 +1,7 @@
 import api from './api'
 import Contants from './Contants'
 import { modalState } from '../_interfaces/modalState'
+import TimeDropdown from './TimeDropdown'
 
 export default class DayModal {
   modal: HTMLDivElement
@@ -21,6 +22,7 @@ export default class DayModal {
       endTime: '',
     }
 
+    this.handleClick = this.handleClick.bind(this)
     this.render()
   }
 
@@ -61,10 +63,11 @@ export default class DayModal {
     <div>11/13/2018</div>
     </div>`
     const startTime = document.createElement('div')
+    startTime.className = 'start-time'
     start.appendChild(startTime)
     startTime.innerHTML = `<span>시작 시간</span>`
     const startScroll = document.createElement('div')
-    startScroll.innerText = 'PM10:00'
+    startScroll.innerText = this.state.startTime || 'PM12:00'
     startTime.appendChild(startScroll)
 
     const end = document.createElement('div')
@@ -74,10 +77,11 @@ export default class DayModal {
     <div>11/13/2018</div>
     </div>`
     const endTime = document.createElement('div')
+    endTime.className = 'end-time'
     end.appendChild(endTime)
     endTime.innerHTML = `<span>종료 시간</span>`
     const endScroll = document.createElement('div')
-    endScroll.innerText = 'PM10:00'
+    endScroll.innerText = this.state.endTime || 'PM02:00'
     endTime.appendChild(endScroll)
 
     content.appendChild(end)
@@ -97,16 +101,23 @@ export default class DayModal {
   }
 
   setEvent() {
-    const modal = document.querySelector('.modal-wrapper')!
-    document.querySelector('.overlay')!.addEventListener('click', (e) => {
-      e.target && modal.remove()
+    const modalWrapper = document.querySelector('.modal-wrapper')!
+    const overlay = document.querySelector('.overlay')!
+    const modal = document.querySelector('.modal')!
+
+    modalWrapper.addEventListener('click', (e: any) => {
+      const verticalMenu = document.querySelector('.vertical-menu')
+      if (e.target.className === 'overlay') {
+        verticalMenu ? verticalMenu.remove() : modalWrapper.remove()
+      }
     })
+
     document.addEventListener('keydown', (e) => {
-      e.key === 'Escape' && modal.remove()
+      e.key === 'Escape' && modalWrapper.remove()
     })
     const closeButton = document.querySelector('footer #id0')!
     closeButton.addEventListener('click', () => {
-      modal.remove()
+      modalWrapper.remove()
     })
     const saveButton = document.querySelector('footer #id1')!
     saveButton.addEventListener('click', async () => {
@@ -118,11 +129,34 @@ export default class DayModal {
         endTime: 'tmp',
       }
       await api.createPlan(requestBody)
-      modal.remove()
+      modalWrapper.remove()
     })
-    modal.querySelector('input')!.addEventListener('keyup', (e) => {
-      this.setState({ title: modal.querySelector('input')!.value })
+    modalWrapper.querySelector('input')!.addEventListener('keyup', (e) => {
+      this.setState({ title: modalWrapper.querySelector('input')!.value })
     })
+    modalWrapper.querySelector('.start-time')!.addEventListener('click', () => {
+      !modalWrapper.querySelector('.vertical-menu') &&
+        new TimeDropdown(
+          modalWrapper.querySelector('.start-time')!,
+          this.handleClick
+        )
+    })
+    modalWrapper.querySelector('.end-time')!.addEventListener('click', () => {
+      !modalWrapper.querySelector('.vertical-menu') &&
+        new TimeDropdown(
+          modalWrapper.querySelector('.end-time')!,
+          this.handleClick
+        )
+    })
+  }
+
+  handleClick(e: any) {
+    const modalWrapper = document.querySelector('.modal-wrapper')!
+    modalWrapper.querySelector('.start-time .vertical-menu')
+      ? this.setState({ startTime: e.target.innerText })
+      : this.setState({ endTime: e.target.innerText })
+    modalWrapper.querySelector('.vertial-menu')?.remove()
+    e.stopPropagation()
   }
 
   setState(newState: object) {

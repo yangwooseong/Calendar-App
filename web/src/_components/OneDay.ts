@@ -19,7 +19,6 @@ export default class OneDay {
   render() {
     const mainPage: HTMLElement = document.querySelector('.main-page')!
     this.oneDay.addEventListener('click', () => {
-      console.log('clicked')
       const dayModal = new DayModal(mainPage, 'Add')
     })
   }
