@@ -17,7 +17,7 @@
   }
 
   .modal {
-    z-index: 1;
+    position: relative;
     border-radius: 2px;
     background-color: white;
     width: 500px;

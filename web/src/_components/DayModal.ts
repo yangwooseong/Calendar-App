@@ -75,11 +75,27 @@ export default class DayModal {
     for (let i = 0; i < num; i++) {
       const button = document.createElement('button')
       button.innerText = stringArr[i]
+      button.id = 'id' + i.toString()
       footer.appendChild(button)
     }
   }
 
+  setEvent() {
+    const modal = document.querySelector('.modal-wrapper')!
+    document.querySelector('.overlay')!.addEventListener('click', (e) => {
+      e.target && modal.remove()
+    })
+    document.addEventListener('keydown', (e) => {
+      e.key === 'Escape' && modal.remove()
+    })
+    const button = document.querySelector('footer #id0')!
+    button.addEventListener('click', () => {
+      modal.remove()
+    })
+  }
+
   render() {
     this.template()
+    this.setEvent()
   }
 }
