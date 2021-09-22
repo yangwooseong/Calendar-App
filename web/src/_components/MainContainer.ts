@@ -1,5 +1,6 @@
 import styles from './MainContainer.module.scss'
 import classNames from 'classnames/bind'
+import OneDay from './OneDay'
 const cx = classNames.bind(styles)
 
 export default class MainContainer {
@@ -29,10 +30,7 @@ export default class MainContainer {
     content.className = cx('calendar-content')
     $target.appendChild(content)
     for (let i = 0; i < 35; i++) {
-      const td = document.createElement('span')
-      td.className = cx('td')
-      td.innerText = i.toString()
-      content.appendChild(td)
+      const td = new OneDay(content, i.toString())
     }
   }
 }
