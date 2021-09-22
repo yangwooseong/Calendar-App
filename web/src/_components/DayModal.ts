@@ -1,19 +1,32 @@
+import api from './api'
 import Contants from './Contants'
+import { modalState } from '../_interfaces/modalState'
 
 export default class DayModal {
   modal: HTMLDivElement
   type: String
+  state: modalState
+
   constructor($target: HTMLElement, type: 'Add' | 'Edit') {
     const modal = document.createElement('div')
     modal.className = 'modal-wrapper'
     $target.appendChild(modal)
     this.modal = modal
     this.type = type
+    this.state = {
+      title: '',
+      startDate: '',
+      startTime: '',
+      endDate: '',
+      endTime: '',
+    }
 
     this.render()
   }
 
   template() {
+    this.modal.innerHTML = ''
+
     const overlay = document.createElement('div')
     overlay.className = 'overlay'
     this.modal.appendChild(overlay)
@@ -37,6 +50,7 @@ export default class DayModal {
     info.innerText = '일정 제목을 입력하세요'
     title.appendChild(info)
     const input = document.createElement('input')
+    input.value = this.state.title
     title.appendChild(input)
 
     const start = document.createElement('div')
@@ -83,33 +97,6 @@ export default class DayModal {
   }
 
   setEvent() {
-    async function createPlan() {
-      const requestBody = {
-        title: 'tmp',
-      }
-      const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody),
-      }
-
-      try {
-        const response = await fetch(
-          `${Contants.ENDPOINT}/plans`,
-          requestOptions
-        )
-        if (response.ok) {
-          const data = await response.json()
-          console.log(data)
-          return data
-        } else {
-          throw await response.json()
-        }
-      } catch (err) {
-        throw err
-      }
-    }
-
     const modal = document.querySelector('.modal-wrapper')!
     document.querySelector('.overlay')!.addEventListener('click', (e) => {
       e.target && modal.remove()
@@ -122,9 +109,28 @@ export default class DayModal {
       modal.remove()
     })
     const saveButton = document.querySelector('footer #id1')!
-    saveButton.addEventListener('click', () => {
-      createPlan()
+    saveButton.addEventListener('click', async () => {
+      const requestBody = {
+        title: this.state.title,
+        startDate: 'tmp',
+        startTime: 'tmp',
+        endDate: 'tmp',
+        endTime: 'tmp',
+      }
+      await api.createPlan(requestBody)
+      modal.remove()
     })
+    modal.querySelector('input')!.addEventListener('keyup', (e) => {
+      this.setState({ title: modal.querySelector('input')!.value })
+    })
+  }
+
+  setState(newState: object) {
+    this.state = { ...this.state, ...newState }
+    this.render()
+    if (newState.hasOwnProperty('title')) {
+      this.modal.querySelector('input')?.focus()
+    }
   }
 
   render() {
