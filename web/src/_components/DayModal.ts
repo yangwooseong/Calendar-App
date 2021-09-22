@@ -1,3 +1,5 @@
+import Contants from './Contants'
+
 export default class DayModal {
   modal: HTMLDivElement
   type: String
@@ -81,6 +83,33 @@ export default class DayModal {
   }
 
   setEvent() {
+    async function createPlan() {
+      const requestBody = {
+        title: 'tmp',
+      }
+      const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody),
+      }
+
+      try {
+        const response = await fetch(
+          `${Contants.ENDPOINT}/plans`,
+          requestOptions
+        )
+        if (response.ok) {
+          const data = await response.json()
+          console.log(data)
+          return data
+        } else {
+          throw await response.json()
+        }
+      } catch (err) {
+        throw err
+      }
+    }
+
     const modal = document.querySelector('.modal-wrapper')!
     document.querySelector('.overlay')!.addEventListener('click', (e) => {
       e.target && modal.remove()
@@ -88,9 +117,13 @@ export default class DayModal {
     document.addEventListener('keydown', (e) => {
       e.key === 'Escape' && modal.remove()
     })
-    const button = document.querySelector('footer #id0')!
-    button.addEventListener('click', () => {
+    const closeButton = document.querySelector('footer #id0')!
+    closeButton.addEventListener('click', () => {
       modal.remove()
+    })
+    const saveButton = document.querySelector('footer #id1')!
+    saveButton.addEventListener('click', () => {
+      createPlan()
     })
   }
 
