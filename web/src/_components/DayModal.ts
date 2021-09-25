@@ -1,17 +1,17 @@
 import api from './api'
 import Contants from './Contants'
-import { modalState } from '../_interfaces/modalState'
+import { IModalState } from '../_interfaces/IModalState'
 import TimeDropdown from './TimeDropdown'
-import { date } from '../_interfaces/date'
+import { IDate } from '../_interfaces/IDate'
 import ErrorModal from './ErrorModal'
 
 export default class DayModal {
   modal: HTMLDivElement
   type: String
-  state: modalState
-  date: date
+  state: IModalState
+  date: IDate
 
-  constructor($target: HTMLElement, type: 'Add' | 'Edit', date: date) {
+  constructor($target: HTMLElement, type: 'Add' | 'Edit', date: IDate) {
     const modal = document.createElement('div')
     modal.className = 'modal-wrapper'
     $target.appendChild(modal)
@@ -20,9 +20,8 @@ export default class DayModal {
     this.date = date
     this.state = {
       title: '',
-      startDate: this.date.day,
+      date: this.date.day,
       startTime: 'PM 00:00',
-      endDate: this.date.day,
       endTime: 'PM 02:00',
     }
 
@@ -130,7 +129,7 @@ export default class DayModal {
       if (res.ok) modalWrapper.remove()
       else {
         const mainPage: HTMLElement = document.querySelector('.main-page')!
-        new ErrorModal(mainPage)
+        new ErrorModal(mainPage, res.msg)
         console.log('modal here')
       }
     })

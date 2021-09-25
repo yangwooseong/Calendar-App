@@ -1,7 +1,7 @@
+import { IModalState } from '../_interfaces/IModalState'
 import Contants from './Contants'
-import { modalState } from '../_interfaces/modalState'
 
-async function createPlan(requestBody: modalState) {
+async function createPlan(requestBody: IModalState) {
   const requestOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

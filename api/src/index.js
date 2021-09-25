@@ -10,37 +10,51 @@ app.use(express.json())
 
 // create a plan
 
-function hanldeError(startTime, endTime) {
-  let start = parseInt(startTime.slice(3, 5), 10)
-  let end = parseInt(endTime.slice(3, 5), 10)
-  start = startTime.startsWith('PM') ? start + 12 : start
-  end = endTime.startsWith('PM') ? end + 12 : end
-
-  if (start > end) {
-    return {
+async function hanldeTimePeriodError(startDate, startTime, endTime) {
+  let msg
+  if (startTime >= endTime) {
+    msg = {
       ok: false,
       msg: 'invalid time period',
     }
   } else {
-    return {
-      ok: true,
-    }
+    const checkDataExist = await pool.query(
+      'SELECT COUNT(*) from plans \
+       WHERE date = $1 and time between $2 and $3',
+      [startDate, startTime, endTime]
+    )
+    const isDataAlreadyExist = parseInt(checkDataExist.rows[0].count, 10) > 0
+
+    msg = isDataAlreadyExist
+      ? {
+          ok: false,
+          msg: 'data already exists',
+        }
+      : {
+          ok: true,
+        }
   }
+  return msg
 }
 
 app.post('/plans', async (req, res) => {
   try {
     const { title, startDate, startTime, endDate, endTime } = req.body
-    console.log(req.body)
+    let start = parseInt(startTime.slice(3, 5), 10)
+    let end = parseInt(endTime.slice(3, 5), 10)
+    start = startTime.startsWith('PM') ? start + 12 : start
+    end = endTime.startsWith('PM') ? end + 12 : end
 
-    const resMsg = hanldeError(startTime, endTime)
+    const resMsg = await hanldeTimePeriodError(startDate, start, end)
 
-    const newPlan = await pool.query(
-      'INSERT INTO plan (title, start_date, start_time, end_date, end_time) \
-      VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [title, startDate, startTime, endDate, endTime]
-    )
-    res.json({ ...resMsg, newPlan })
+    for (let time = start; time < end; time++) {
+      await pool.query(
+        'INSERT INTO plans (title, date, time ) \
+         VALUES ($1, $2, $3)',
+        [title, startDate, time]
+      )
+    }
+    res.json({ ...resMsg })
   } catch (err) {
     throw err
   }
