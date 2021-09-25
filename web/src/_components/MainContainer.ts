@@ -56,25 +56,29 @@ export default class MainContainer {
     const lastSundayDate = lastSundayOfLastMonth.getDate()
 
     for (let i = 0; i < dayOfFirstDate; i++) {
-      const dateObj = {
-        date: (lastSundayDate + i).toString(),
-        month: month.toString(),
-      }
-      const td = new OneDay(content, dateObj)
+      const newYear = month === 0 ? year - 1 : year
+      const newMonth = month === 0 ? 11 : month - 1
+      const dateTime =
+        newYear.toString() +
+        ('0' + (newMonth + 1).toString()).slice(-2) +
+        ('0' + (lastSundayDate + i).toString()).slice(-2)
+      new OneDay(content, dateTime)
     }
     for (let i = 1; i <= lastDate; i++) {
-      const dateObj = {
-        date: i.toString(),
-        month: month.toString(),
-      }
-      const td = new OneDay(content, dateObj)
+      const dateTime =
+        year.toString() +
+        ('0' + (month + 1).toString()).slice(-2) +
+        ('0' + i.toString()).slice(-2)
+      new OneDay(content, dateTime)
     }
     for (let i = 1; i <= 35 - dayOfFirstDate - lastDate; i++) {
-      const dateObj = {
-        date: i.toString(),
-        month: month === 11 ? '0' : (month + 1).toString(),
-      }
-      new OneDay(content, dateObj)
+      const newYear = month === 11 ? year + 1 : year
+      const newMonth = month === 11 ? 0 : month + 1
+      const dateTime =
+        newYear.toString() +
+        ('0' + (newMonth + 1).toString()).slice(-2) +
+        ('0' + i.toString()).slice(-2)
+      new OneDay(content, dateTime)
     }
   }
 }

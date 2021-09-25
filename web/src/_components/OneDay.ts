@@ -6,14 +6,16 @@ const cx = classNames.bind(styles)
 
 export default class OneDay {
   oneDay: HTMLSpanElement
-  dateObj: IDate
+  dateTime: string
 
-  constructor($target: HTMLElement, dateObj: IDate) {
+  constructor($target: HTMLElement, dateTime: string) {
     const oneDay = document.createElement('span')
     oneDay.className = cx('one-day')
-    oneDay.innerText = dateObj.date
+    oneDay.innerText = dateTime.slice(-2).startsWith('0')
+      ? dateTime.slice(-1)
+      : dateTime.slice(-2)
     this.oneDay = oneDay
-    this.dateObj = dateObj
+    this.dateTime = dateTime
 
     $target.appendChild(oneDay)
 
@@ -23,7 +25,7 @@ export default class OneDay {
   render() {
     const mainPage: HTMLElement = document.querySelector('.main-page')!
     this.oneDay.addEventListener('click', () => {
-      const dayModal = new DayModal(mainPage, 'Add', this.dateObj)
+      const dayModal = new DayModal(mainPage, 'Add', this.dateTime)
     })
   }
 }
