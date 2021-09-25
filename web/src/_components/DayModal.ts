@@ -2,24 +2,28 @@ import api from './api'
 import Contants from './Contants'
 import { modalState } from '../_interfaces/modalState'
 import TimeDropdown from './TimeDropdown'
+import { date } from '../_interfaces/date'
+import ErrorModal from './ErrorModal'
 
 export default class DayModal {
   modal: HTMLDivElement
   type: String
   state: modalState
+  date: date
 
-  constructor($target: HTMLElement, type: 'Add' | 'Edit') {
+  constructor($target: HTMLElement, type: 'Add' | 'Edit', date: date) {
     const modal = document.createElement('div')
     modal.className = 'modal-wrapper'
     $target.appendChild(modal)
     this.modal = modal
     this.type = type
+    this.date = date
     this.state = {
       title: '',
-      startDate: '',
-      startTime: '',
-      endDate: '',
-      endTime: '',
+      startDate: this.date.day,
+      startTime: 'PM 00:00',
+      endDate: this.date.day,
+      endTime: 'PM 02:00',
     }
 
     this.handleClick = this.handleClick.bind(this)
@@ -67,7 +71,7 @@ export default class DayModal {
     start.appendChild(startTime)
     startTime.innerHTML = `<span>시작 시간</span>`
     const startScroll = document.createElement('div')
-    startScroll.innerText = this.state.startTime || 'PM12:00'
+    startScroll.innerText = this.state.startTime
     startTime.appendChild(startScroll)
 
     const end = document.createElement('div')
@@ -81,7 +85,7 @@ export default class DayModal {
     end.appendChild(endTime)
     endTime.innerHTML = `<span>종료 시간</span>`
     const endScroll = document.createElement('div')
-    endScroll.innerText = this.state.endTime || 'PM02:00'
+    endScroll.innerText = this.state.endTime
     endTime.appendChild(endScroll)
 
     content.appendChild(end)
@@ -121,16 +125,16 @@ export default class DayModal {
     })
     const saveButton = document.querySelector('footer #id1')!
     saveButton.addEventListener('click', async () => {
-      const requestBody = {
-        title: this.state.title,
-        startDate: 'tmp',
-        startTime: 'tmp',
-        endDate: 'tmp',
-        endTime: 'tmp',
+      const requestBody = this.state
+      const res = await api.createPlan(requestBody)
+      if (res.ok) modalWrapper.remove()
+      else {
+        const mainPage: HTMLElement = document.querySelector('.main-page')!
+        new ErrorModal(mainPage)
+        console.log('modal here')
       }
-      await api.createPlan(requestBody)
-      modalWrapper.remove()
     })
+
     modalWrapper.querySelector('input')!.addEventListener('keyup', (e) => {
       this.setState({ title: modalWrapper.querySelector('input')!.value })
     })
@@ -168,6 +172,7 @@ export default class DayModal {
   }
 
   render() {
+    console.log(this.state)
     this.template()
     this.setEvent()
   }

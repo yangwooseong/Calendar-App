@@ -19,7 +19,7 @@ export default class TimeDropdown {
       const time = ('0' + i.toString()).slice(-2)
       timeArr.push(`AM ${time}:00`)
     }
-    for (let i = 12; i > 0; i--) {
+    for (let i = 0; i <= 12; i++) {
       const time = ('0' + i.toString()).slice(-2)
       timeArr.push(`PM ${time}:00`)
     }

@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "classnames": "^2.3.1",
+    "node": "^16.9.1",
     "scss-loader": "^0.0.1"
   }
 }

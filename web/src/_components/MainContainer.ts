@@ -4,9 +4,11 @@ import OneDay from './OneDay'
 const cx = classNames.bind(styles)
 
 export default class MainContainer {
-  constructor($target: HTMLElement) {
+  month: number
+  constructor($target: HTMLElement, month: number) {
     const calendar = document.createElement('section')
     calendar.className = cx('calendar')
+    this.month = month
     this.addCalendarHeader(calendar)
     this.addCalendarContent(calendar)
 
@@ -30,7 +32,11 @@ export default class MainContainer {
     content.className = cx('calendar-content')
     $target.appendChild(content)
     for (let i = 0; i < 35; i++) {
-      const td = new OneDay(content, i.toString())
+      const date = {
+        day: i.toString(),
+        month: this.month.toString(),
+      }
+      const td = new OneDay(content, date)
     }
   }
 }
