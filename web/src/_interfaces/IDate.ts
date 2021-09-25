@@ -1,4 +1,4 @@
 export interface IDate {
-  day: string
+  date: string
   month: string
 }

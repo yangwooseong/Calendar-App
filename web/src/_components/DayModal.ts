@@ -9,18 +9,18 @@ export default class DayModal {
   modal: HTMLDivElement
   type: String
   state: IModalState
-  date: IDate
+  dateObj: IDate
 
-  constructor($target: HTMLElement, type: 'Add' | 'Edit', date: IDate) {
+  constructor($target: HTMLElement, type: 'Add' | 'Edit', dateObj: IDate) {
     const modal = document.createElement('div')
     modal.className = 'modal-wrapper'
     $target.appendChild(modal)
     this.modal = modal
     this.type = type
-    this.date = date
+    this.dateObj = dateObj
     this.state = {
       title: '',
-      date: this.date.day,
+      date: this.dateObj.date,
       startTime: 'PM 00:00',
       endTime: 'PM 02:00',
     }
