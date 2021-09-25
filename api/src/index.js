@@ -39,25 +39,31 @@ async function hanldeTimePeriodError(startDate, startTime, endTime) {
 
 app.post('/plans', async (req, res) => {
   try {
-    const { title, startDate, startTime, endDate, endTime } = req.body
+    const { title, date, startTime, endTime } = req.body
     let start = parseInt(startTime.slice(3, 5), 10)
     let end = parseInt(endTime.slice(3, 5), 10)
     start = startTime.startsWith('PM') ? start + 12 : start
     end = endTime.startsWith('PM') ? end + 12 : end
 
-    const resMsg = await hanldeTimePeriodError(startDate, start, end)
+    const resMsg = await hanldeTimePeriodError(date, start, end)
 
     for (let time = start; time < end; time++) {
       await pool.query(
         'INSERT INTO plans (title, date, time ) \
          VALUES ($1, $2, $3)',
-        [title, startDate, time]
+        [title, date, time]
       )
     }
     res.json({ ...resMsg })
   } catch (err) {
     throw err
   }
+})
+
+app.post('/request_plan', async (req, res) => {
+  try {
+    const { month, date } = req.body
+  } catch (err) {}
 })
 
 app.listen(5000, () => {
