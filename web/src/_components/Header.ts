@@ -2,7 +2,7 @@ import RangeSelctor from './RangeSelector'
 import TimeRange from './TimeRange'
 import { IMonthAndYear } from '../_interfaces/IMonthAndYear'
 import Component from '../_core/Component'
-import TimeRangeComponent from './TimeRangeComponent'
+import TimeRangeComponent from './TimeRange'
 
 export default class HeaderComponent extends Component {
   constructor($target: HTMLElement, props: any) {
@@ -24,7 +24,7 @@ export default class HeaderComponent extends Component {
       this.$target.querySelector('.time-range')!
     const RangeSelector: HTMLDivElement =
       this.$target.querySelector('.range-selector')!
-    new TimeRangeComponent(timeRangeTarget, this.props)
+    new TimeRange(timeRangeTarget, this.props)
     // new RangeSelctor(nav)
   }
 }

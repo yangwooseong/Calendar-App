@@ -27,15 +27,18 @@ export default class MainPage extends Component {
 
   handleClick(e: any): void {
     e.target as any // FIX ME: TYPE 변경
+    let year, month
     if (e.target.className === 'left-arrow') {
-      const year =
-        this.state.month === 1 ? this.state.year - 1 : this.state.year
-      const month = this.state.month === 1 ? 12 : this.state.month - 1
-      this.setState({
-        month,
-        year,
-      })
+      year = this.state.month === 1 ? this.state.year - 1 : this.state.year
+      month = this.state.month === 1 ? 12 : this.state.month - 1
+    } else if (e.target.className === 'right-arrow') {
+      year = this.state.month === 12 ? this.state.year + 1 : this.state.year
+      month = this.state.month === 12 ? 1 : this.state.month + 1
     }
+    this.setState({
+      month,
+      year,
+    })
   }
 
   template() {

@@ -1,57 +1,34 @@
-import { threadId } from 'worker_threads'
-import { IMonthAndYear } from '../_interfaces/IMonthAndYear'
+import Component from '../_core/Component'
 
-export default class TimeRange {
-  monthAndYear: IMonthAndYear
+export default class TimeRange extends Component {
   handleClick: (e: Event) => void
-  $target: HTMLElement
 
-  // range: HTMLDivElement
-
-  constructor(
-    $target: HTMLElement,
-    monthAndYear: IMonthAndYear,
-    handleClick: (e: Event) => void
-  ) {
-    // const range: HTMLDivElement = document.createElement('div')
-    // range.className = 'time-range'
-    // $target.appendChild(range)
-    this.monthAndYear = monthAndYear
+  constructor($target: HTMLElement, props: any) {
+    super($target, props)
+    const { handleClick } = props
     this.handleClick = handleClick
-    this.$target = $target
-    // this.range = range
-
-    this.render()
   }
 
   template() {
-    console.log(this.monthAndYear)
-    console.log('called')
-    console.log(this.$target)
-    this.$target.innerHTML = `<span>2018년 ${this.monthAndYear.month}월</span>`
-    this.appendArrowIcon(this.$target)
-  }
-
-  appendArrowIcon($target: HTMLElement) {
-    const leftArrow = document.createElement('span')
-    leftArrow.innerText = '<'
-    leftArrow.className = 'left-arrow'
-    $target.insertBefore(leftArrow, $target.firstElementChild)
-    const rightArrow = document.createElement('span')
-    rightArrow.innerText = '>'
-    rightArrow.className = 'right-arrow'
-    $target.insertBefore(leftArrow, $target.firstElementChild)
-    $target.appendChild(rightArrow)
+    return `
+    <div class='left-arrow'> 
+      <
+    </div>
+    <div>${this.props.year}년 ${this.props.month}월</div>
+    <div class='right-arrow'>
+      >
+    </div>
+    `
   }
 
   setEvent() {
-    document.querySelector('.left-arrow')?.addEventListener('click', (e) => {
-      this.handleClick(e)
+    this.$target.addEventListener('click', (e: any) => {
+      if (
+        e.target.classList.contains('left-arrow') ||
+        e.target.classList.contains('right-arrow')
+      ) {
+        this.handleClick(e)
+      }
     })
-  }
-
-  render() {
-    this.template()
-    this.setEvent()
   }
 }
