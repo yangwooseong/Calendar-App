@@ -9,6 +9,7 @@ body {
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
+@import './_components/RangeSelector.scss';
 @import './_components/MainPage.scss';
 @import './_components/DayModal.scss';
 @import './_components/TimeDropdown.scss';

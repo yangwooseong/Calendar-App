@@ -15,6 +15,7 @@
   .left-button {
     @include twobuttons();
     border-radius: 5px 0 0 5px;
+    border-right: 1px solid #aaa;
   }
   .right-button {
     @include twobuttons();

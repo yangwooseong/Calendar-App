@@ -1,24 +1,17 @@
-import styles from './RangeSelector.module.scss'
-import classNames from 'classnames/bind'
-const cx = classNames.bind(styles)
+import Component from '../_core/Component'
 
-export default class RangeSelctor {
+export default class RangeSelctor extends Component {
   constructor($target: HTMLElement) {
-    const range: HTMLElement = document.createElement('div')
-    range.className = cx('range-selector')
-    this.appendTwoButtons(range)
-
-    $target.appendChild(range)
+    super($target)
   }
 
-  appendTwoButtons($target: HTMLElement) {
-    const leftButton = document.createElement('button')
-    leftButton.innerText = '월'
-    leftButton.className = cx('left-button')
-    $target.appendChild(leftButton)
-    const rightButton = document.createElement('button')
-    rightButton.innerText = '일'
-    rightButton.className = cx('right-button')
-    $target.appendChild(rightButton)
+  template() {
+    return `<button class='left-button'>
+      월
+    </button>
+    <button class='right-button'>
+      일    
+    </button>
+    `
   }
 }

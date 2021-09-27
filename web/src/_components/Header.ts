@@ -19,12 +19,11 @@ export default class HeaderComponent extends Component {
   }
 
   appendChildren() {
-    const nav: HTMLElement = this.$target.querySelector('.header')!
     const timeRangeTarget: HTMLElement =
       this.$target.querySelector('.time-range')!
-    const RangeSelector: HTMLDivElement =
+    const rangeSelectorTarget: HTMLDivElement =
       this.$target.querySelector('.range-selector')!
     new TimeRange(timeRangeTarget, this.props)
-    // new RangeSelctor(nav)
+    new RangeSelctor(rangeSelectorTarget)
   }
 }
