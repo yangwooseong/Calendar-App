@@ -1,6 +1,6 @@
-.main-page {
+.main-container {
   display: flex;
-  height: 90vh;
+  height: 80vh;
   width: 80vw;
   min-width: 800px;
   margin: auto;
@@ -8,4 +8,8 @@
   justify-content: center;
   align-self: center;
   align-items: center;
+}
+.main-page {
+  display: flex;
+  flex-direction: column;
 }

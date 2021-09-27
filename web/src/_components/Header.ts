@@ -1,45 +1,30 @@
 import RangeSelctor from './RangeSelector'
 import TimeRange from './TimeRange'
 import { IMonthAndYear } from '../_interfaces/IMonthAndYear'
+import Component from '../_core/Component'
+import TimeRangeComponent from './TimeRangeComponent'
 
-export default class Header {
-  monthAndYear: IMonthAndYear
-  handleClick: (e: Event) => void
-  nav: HTMLHeadElement
-  $target: HTMLElement
-  constructor(
-    $target: HTMLElement,
-    monthAndYear: IMonthAndYear,
-    handleClick: (e: Event) => void
-  ) {
-    const nav: HTMLHeadElement = document.createElement('header')
-    nav.className = 'header'
-    $target.appendChild(nav)
-
-    this.monthAndYear = monthAndYear
-    this.handleClick = handleClick
-    this.nav = nav
-    this.$target = $target
+export default class HeaderComponent extends Component {
+  constructor($target: HTMLElement, props: any) {
+    super($target, props)
 
     this.render()
   }
 
   template() {
-    this.nav.innerHTML = `
+    return `
     <div class='time-range'></div>
     <div class='range-selector'></div>
     `
   }
 
-  render() {
-    this.template()
-
-    const nav: HTMLHeadElement = this.$target.querySelector('.header')!
-    const timeRange: HTMLDivElement = this.$target.querySelector('.time-range')!
+  appendChildren() {
+    const nav: HTMLElement = this.$target.querySelector('.header')!
+    const timeRangeTarget: HTMLElement =
+      this.$target.querySelector('.time-range')!
     const RangeSelector: HTMLDivElement =
       this.$target.querySelector('.range-selector')!
-
-    new TimeRange(timeRange, this.monthAndYear, this.handleClick)
+    new TimeRangeComponent(timeRangeTarget, this.props)
     // new RangeSelctor(nav)
   }
 }

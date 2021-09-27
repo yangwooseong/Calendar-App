@@ -35,9 +35,9 @@ export default class MainContainer {
     $target.appendChild(content)
 
     const year = this.monthAndYear.year
-    const month = this.monthAndYear.month
+    const month = this.monthAndYear.month - 1
     const firstDate = new Date(year, month, 1)
-    const lastDate = new Date(year, month + 1, 0).getDate()
+    let lastDate = new Date(year, month + 1, 0).getDate()
     const dayOfFirstDate = firstDate.getDay()
 
     let lastSundayOfLastMonth = new Date(year, month, 1)
@@ -55,6 +55,9 @@ export default class MainContainer {
         ('0' + (lastSundayDate + i).toString()).slice(-2)
       new OneDay(content, dateTime)
     }
+    if (dayOfFirstDate + lastDate >= 35) {
+      lastDate = lastDate - (dayOfFirstDate + lastDate - 35)
+    }
     for (let i = 1; i <= lastDate; i++) {
       const dateTime =
         year.toString() +
@@ -62,6 +65,7 @@ export default class MainContainer {
         ('0' + i.toString()).slice(-2)
       new OneDay(content, dateTime)
     }
+    console.log(dayOfFirstDate, lastDate)
     for (let i = 1; i <= 35 - dayOfFirstDate - lastDate; i++) {
       const newYear = month === 11 ? year + 1 : year
       const newMonth = month === 11 ? 0 : month + 1

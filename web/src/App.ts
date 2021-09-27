@@ -1,9 +1,18 @@
 import './index.scss'
+import Component from './_core/Component'
 import MainPage from './_components/MainPage'
 
-class App {
+class App extends Component {
   constructor($target: HTMLElement) {
-    const mainPage = new MainPage($target)
+    super($target)
+  }
+  template() {
+    return `<div class='main-page'></div>`
+  }
+  appendChildren() {
+    const mainPageTarget: HTMLElement =
+      this.$target.querySelector('.main-page')!
+    new MainPage(mainPageTarget)
   }
 }
 
