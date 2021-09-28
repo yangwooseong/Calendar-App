@@ -1,4 +1,3 @@
-import DayModal from './DayModal'
 import Component from '../_core/Component'
 
 export default class OneDay extends Component {

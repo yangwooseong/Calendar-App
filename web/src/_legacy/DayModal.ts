@@ -1,36 +1,42 @@
 import api from './api'
+import { IModalState } from '../_interfaces/IModalState'
 import TimeDropdown from './TimeDropdown'
 import ErrorModal from './ErrorModal'
-import Component from '../_core/Component'
 
-export default class DayModal extends Component {
-  constructor($target: HTMLElement, props: any) {
-    super($target, props)
+export default class DayModal {
+  modal: HTMLDivElement
+  type: String
+  state: IModalState
+  dateTime: string
+
+  constructor($target: HTMLElement, type: 'Add' | 'Edit', dateTime: string) {
+    const modal = document.createElement('div')
+    modal.className = 'modal-wrapper'
+    $target.appendChild(modal)
+    this.modal = modal
+    this.type = type
+    this.dateTime = dateTime
+    this.state = {
+      title: '',
+      date: this.dateTime,
+      startTime: 'PM 00:00',
+      endTime: 'PM 02:00',
+    }
 
     this.handleClick = this.handleClick.bind(this)
     this.render()
   }
 
-  setup() {
-    const { type, dateTime } = this.props
-    this.state = {
-      title: '',
-      date: dateTime,
-      startTime: 'PM 00:00',
-      endTime: 'PM 02:00',
-    }
-  }
-
-  appendChildren() {
-    const modalTarget = this.$target
+  template() {
+    this.modal.innerHTML = ''
 
     const overlay = document.createElement('div')
     overlay.className = 'overlay'
-    modalTarget.appendChild(overlay)
+    this.modal.appendChild(overlay)
 
     const modal = document.createElement('section')
     modal.className = 'modal'
-    modalTarget.appendChild(modal)
+    this.modal.appendChild(modal)
 
     const header = document.createElement('header')
     header.className = 'modal-header'
@@ -86,7 +92,7 @@ export default class DayModal extends Component {
     const footer = document.createElement('footer')
     modal.appendChild(footer)
     const stringArr = ['닫기', '저장', '수정']
-    const num = this.props.type === 'Add' ? 2 : 3
+    const num = this.type === 'Add' ? 2 : 3
     for (let i = 0; i < num; i++) {
       const button = document.createElement('button')
       button.innerText = stringArr[i]
@@ -96,70 +102,75 @@ export default class DayModal extends Component {
   }
 
   setEvent() {
-    const target = this.$target
+    const modalWrapper = document.querySelector('.modal-wrapper')!
     const overlay = document.querySelector('.overlay')!
     const modal = document.querySelector('.modal')!
 
-    target.addEventListener('click', (e: any) => {
+    modalWrapper.addEventListener('click', (e: any) => {
       const verticalMenu = document.querySelector('.vertical-menu')
       if (e.target.className === 'overlay') {
-        verticalMenu ? verticalMenu.remove() : target.remove()
+        verticalMenu ? verticalMenu.remove() : modalWrapper.remove()
       }
     })
 
     document.addEventListener('keydown', (e) => {
-      e.key === 'Escape' && target.remove()
+      e.key === 'Escape' && modalWrapper.remove()
     })
-
-    target.addEventListener('click', (e: any) => {
-      console.log(e.target)
-      if (e.target.classList.contains('footer')) {
-        console.log('he')
+    const closeButton = document.querySelector('footer #id0')!
+    closeButton.addEventListener('click', () => {
+      modalWrapper.remove()
+    })
+    const saveButton = document.querySelector('footer #id1')!
+    saveButton.addEventListener('click', async () => {
+      const requestBody = this.state
+      const res = await api.createPlan(requestBody)
+      if (res.ok) modalWrapper.remove()
+      else {
+        const mainPage: HTMLElement = document.querySelector('.main-page')!
+        new ErrorModal(mainPage, res.msg)
+        console.log('modal here')
       }
     })
-    // const closeButton = target.querySelector('footer #id0')!
-    // closeButton.addEventListener('click', () => {
-    //   target.remove()
-    // })
-    // const saveButton = target.querySelector('footer #id1')!
-    // saveButton.addEventListener('click', async () => {
-    //   const requestBody = this.state
-    //   const res = await api.createPlan(requestBody)
-    //   if (res.ok) target.remove()
-    //   else {
-    //     const mainPage: HTMLElement = document.querySelector('.main-page')!
-    //     new ErrorModal(mainPage, res.msg)
-    //     console.log('modal here')
-    //   }
-    // })
 
-    // target.querySelector('input')!.addEventListener('keyup', (e) => {
-    //   this.setState({ title: target.querySelector('input')!.value })
-    // })
-    // target.querySelector('.start-time')!.addEventListener('click', () => {
-    //   !target.querySelector('.vertical-menu') &&
-    //     new TimeDropdown(target.querySelector('.start-time')!, this.handleClick)
-    // })
-    // target.querySelector('.end-time')!.addEventListener('click', () => {
-    //   !target.querySelector('.vertical-menu') &&
-    //     new TimeDropdown(target.querySelector('.end-time')!, this.handleClick)
-    // })
+    modalWrapper.querySelector('input')!.addEventListener('keyup', (e) => {
+      this.setState({ title: modalWrapper.querySelector('input')!.value })
+    })
+    modalWrapper.querySelector('.start-time')!.addEventListener('click', () => {
+      !modalWrapper.querySelector('.vertical-menu') &&
+        new TimeDropdown(
+          modalWrapper.querySelector('.start-time')!,
+          this.handleClick
+        )
+    })
+    modalWrapper.querySelector('.end-time')!.addEventListener('click', () => {
+      !modalWrapper.querySelector('.vertical-menu') &&
+        new TimeDropdown(
+          modalWrapper.querySelector('.end-time')!,
+          this.handleClick
+        )
+    })
   }
 
   handleClick(e: any) {
-    const target = document.querySelector('.modal-wrapper')!
-    target.querySelector('.start-time .vertical-menu')
+    const modalWrapper = document.querySelector('.modal-wrapper')!
+    modalWrapper.querySelector('.start-time .vertical-menu')
       ? this.setState({ startTime: e.target.innerText })
       : this.setState({ endTime: e.target.innerText })
-    target.querySelector('.vertial-menu')?.remove()
+    modalWrapper.querySelector('.vertial-menu')?.remove()
     e.stopPropagation()
   }
 
-  // setState(newState: object) {
-  //   this.state = { ...this.state, ...newState }
-  //   this.render()
-  //   if (newState.hasOwnProperty('title')) {
-  //     this.modal.querySelector('input')?.focus()
-  //   }
-  // }
+  setState(newState: object) {
+    this.state = { ...this.state, ...newState }
+    this.render()
+    if (newState.hasOwnProperty('title')) {
+      this.modal.querySelector('input')?.focus()
+    }
+  }
+
+  render() {
+    console.log(this.state)
+    this.template()
+    this.setEvent()
+  }
 }

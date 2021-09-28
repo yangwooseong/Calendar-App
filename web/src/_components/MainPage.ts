@@ -11,7 +11,7 @@ export default class MainPage extends Component {
   state: any
   constructor($target: HTMLElement, props?: any) {
     super($target, props)
-    this.handleClick = this.handleClick.bind(this)
+    // this.handleClick = this.handleClick.bind(this)
   }
 
   setup() {
@@ -42,6 +42,7 @@ export default class MainPage extends Component {
     return `
       <header class='header'></header>
       <div class='main-container'></div>
+      <div class='modal-wrapper'></div>
     `
   }
 
@@ -49,7 +50,7 @@ export default class MainPage extends Component {
     const headerTarget: HTMLElement = this.$target.querySelector('.header')!
     const headerProps = {
       ...this.state,
-      handleClick: this.handleClick,
+      handleClick: this.handleClick.bind(this),
     }
     const mainContainerProps = {
       ...this.state,
