@@ -12,7 +12,6 @@ export default class MainPage extends Component {
   constructor($target: HTMLElement, props?: any) {
     super($target, props)
     this.handleClick = this.handleClick.bind(this)
-    this.render()
   }
 
   setup() {
@@ -22,8 +21,6 @@ export default class MainPage extends Component {
       year: new Date().getFullYear(),
     }
   }
-
-  setEvent() {}
 
   handleClick(e: any): void {
     e.target as any // FIX ME: TYPE 변경
@@ -43,7 +40,7 @@ export default class MainPage extends Component {
 
   template() {
     return `
-      <div class='header'></div>
+      <header class='header'></header>
       <div class='main-container'></div>
     `
   }
@@ -54,9 +51,12 @@ export default class MainPage extends Component {
       ...this.state,
       handleClick: this.handleClick,
     }
+    const mainContainerProps = {
+      ...this.state,
+    }
     const mainContainerTarget: HTMLElement =
       this.$target.querySelector('.main-container')!
     new Header(headerTarget, headerProps)
-    new MainContainer(mainContainerTarget, this.state)
+    new MainContainer(mainContainerTarget, mainContainerProps)
   }
 }

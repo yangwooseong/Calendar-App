@@ -1,26 +1,29 @@
-import styles from './MainContainer.module.scss'
-import classNames from 'classnames/bind'
 import OneDay from './OneDay'
-import { IMonthAndYear } from '../_interfaces/IMonthAndYear'
+import Component from '../_core/Component'
+import DayModal from './DayModal'
 
-const cx = classNames.bind(styles)
-export default class MainContainer {
-  monthAndYear: IMonthAndYear
+export default class MainContainer extends Component {
+  constructor($target: HTMLElement, props: any) {
+    super($target, props)
+  }
 
-  constructor($target: HTMLElement, monthAndYear: IMonthAndYear) {
-    const calendar = document.createElement('section')
-    calendar.className = cx('calendar')
-    this.monthAndYear = monthAndYear
-    this.addCalendarHeader(calendar)
-    this.addCalendarContent(calendar)
+  template() {
+    return `
+      <section class='calendar'></section>
+    `
+  }
 
-    $target.appendChild(calendar)
+  appendChildren() {
+    const mainContainerTarget: HTMLElement =
+      this.$target.querySelector('.calendar')!
+    this.addCalendarHeader(mainContainerTarget)
+    this.addCalendarContent(mainContainerTarget)
   }
 
   addCalendarHeader($target: HTMLElement) {
     const arr = ['일', '월', '화', '수', '목', '금', '토']
     const dayHeader = document.createElement('header')
-    dayHeader.className = cx('calendar-header')
+    dayHeader.className = 'calendar-header'
     $target.appendChild(dayHeader)
     arr.forEach((day, idx) => {
       const span: HTMLSpanElement = document.createElement('span')
@@ -31,11 +34,11 @@ export default class MainContainer {
 
   addCalendarContent($target: HTMLElement) {
     const content = document.createElement('section')
-    content.className = cx('calendar-content')
+    content.className = 'calendar-content'
     $target.appendChild(content)
 
-    const year = this.monthAndYear.year
-    const month = this.monthAndYear.month - 1
+    let { year, month } = this.props
+    month = month - 1
     const firstDate = new Date(year, month, 1)
     let lastDate = new Date(year, month + 1, 0).getDate()
     const dayOfFirstDate = firstDate.getDay()
@@ -46,35 +49,64 @@ export default class MainContainer {
     )
     const lastSundayDate = lastSundayOfLastMonth.getDate()
 
+    // 지난 달
     for (let i = 0; i < dayOfFirstDate; i++) {
+      const oneday = document.createElement('span')
+      oneday.className = 'one-day'
+      content.appendChild(oneday)
+
       const newYear = month === 0 ? year - 1 : year
       const newMonth = month === 0 ? 11 : month - 1
       const dateTime =
         newYear.toString() +
         ('0' + (newMonth + 1).toString()).slice(-2) +
         ('0' + (lastSundayDate + i).toString()).slice(-2)
-      new OneDay(content, dateTime)
+      new OneDay(oneday, dateTime)
     }
     if (dayOfFirstDate + lastDate >= 35) {
       lastDate = lastDate - (dayOfFirstDate + lastDate - 35)
     }
+
+    // 이번 달
     for (let i = 1; i <= lastDate; i++) {
+      const oneday = document.createElement('span')
+      oneday.className = 'one-day'
+      content.appendChild(oneday)
+
       const dateTime =
         year.toString() +
         ('0' + (month + 1).toString()).slice(-2) +
         ('0' + i.toString()).slice(-2)
-      new OneDay(content, dateTime)
+      new OneDay(oneday, dateTime)
     }
-    console.log(dayOfFirstDate, lastDate)
+
+    // 다음 달
     for (let i = 1; i <= 35 - dayOfFirstDate - lastDate; i++) {
+      const oneday = document.createElement('span')
+      oneday.className = 'one-day'
+      content.appendChild(oneday)
+
       const newYear = month === 11 ? year + 1 : year
       const newMonth = month === 11 ? 0 : month + 1
       const dateTime =
         newYear.toString() +
         ('0' + (newMonth + 1).toString()).slice(-2) +
         ('0' + i.toString()).slice(-2)
-      new OneDay(content, dateTime)
+      new OneDay(oneday, dateTime)
     }
+  }
+
+  setEvent() {
+    this.$target.addEventListener('click', (e: any) => {
+      if (e.target.classList.contains('one-day')) {
+        const mainPage: HTMLElement = document.querySelector('.main-page')!
+        const dateTime =
+          this.props.year +
+          ('0' + this.props.month).slice(-2) +
+          ('0' + e.target.innerText.toString()).slice(-2)
+        new DayModal(mainPage, 'Add', dateTime)
+      }
+    })
   }
 
   displayPlan() {

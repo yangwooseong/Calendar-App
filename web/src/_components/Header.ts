@@ -1,10 +1,8 @@
 import RangeSelctor from './RangeSelector'
 import TimeRange from './TimeRange'
-import { IMonthAndYear } from '../_interfaces/IMonthAndYear'
 import Component from '../_core/Component'
-import TimeRangeComponent from './TimeRange'
 
-export default class HeaderComponent extends Component {
+export default class Header extends Component {
   constructor($target: HTMLElement, props: any) {
     super($target, props)
 
