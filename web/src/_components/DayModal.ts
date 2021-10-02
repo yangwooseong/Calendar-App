@@ -162,6 +162,7 @@ export default class DayModal extends Component {
         if (res.ok) {
           target.innerHTML = ''
           target.style.pointerEvents = 'none'
+          this.props.requestData(true)
         } else {
           console.log('error modal')
           const errorModalTarget: HTMLElement = document.querySelector(

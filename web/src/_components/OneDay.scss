@@ -1,8 +1,23 @@
 .one-day {
-  justify-content: center;
   width: 100%;
   padding: 5px 0 0 5px;
   margin: 0px;
   border-right: 2px solid #aaa;
   border-bottom: 2px solid #aaa;
+  display: flex;
+  flex-direction: column;
+
+  span:first-child {
+    margin-bottom: 5px;
+  }
+
+  li[class^='plan'] {
+    background-color: lightblue;
+    margin-right: 10px;
+    padding: 3px 7px;
+    border-radius: 3px;
+    align-items: center;
+    list-style: circle;
+    margin: 3px 5px;
+  }
 }

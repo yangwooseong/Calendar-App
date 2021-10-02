@@ -6,10 +6,6 @@ const pool = require('./db')
 app.use(cors())
 app.use(express.json())
 
-// ROUTES
-
-// create a plan
-
 async function hanldeTimePeriodError(startDate, startTime, endTime) {
   let msg
   if (startTime >= endTime) {
@@ -46,6 +42,8 @@ app.post('/plans', async (req, res) => {
     end = endTime.startsWith('PM') ? end + 12 : end
 
     const resMsg = await hanldeTimePeriodError(date, start, end)
+
+    console.log(resMsg, req.body)
 
     for (let time = start; time < end; time++) {
       await pool.query(

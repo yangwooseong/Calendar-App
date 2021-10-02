@@ -22,14 +22,14 @@
   height: 15%;
   align-items: center;
   justify-content: center;
-  span {
+  div {
     width: 100%;
     text-align: center;
   }
-  span:nth-child(1) {
+  div:nth-child(1) {
     color: red;
   }
-  span:nth-child(7) {
+  div:nth-child(7) {
     color: blue;
   }
 }
