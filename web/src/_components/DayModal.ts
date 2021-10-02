@@ -11,7 +11,7 @@ export default class DayModal extends Component {
     this.targetBeforeAddingEventListener = $target
     $target.style.pointerEvents = 'auto'
 
-    // this.handleClick = this.handleClick.bind(this)
+    this.handleClick = this.handleClick.bind(this)
     this.render()
   }
 
@@ -51,6 +51,7 @@ export default class DayModal extends Component {
     info.innerText = '일정 제목을 입력하세요'
     title.appendChild(info)
     const input = document.createElement('input')
+    input.className = 'title-input'
     input.value = this.state.title
     title.appendChild(input)
 
@@ -113,17 +114,17 @@ export default class DayModal extends Component {
       once: false,
     }
 
-    // target.addEventListener('click', (e: any) => {
-    //   const verticalMenu = document.querySelector('.vertical-menu')
-    //   if (e.target.className === 'overlay') {
-    //     if (verticalMenu) {
-    //       verticalMenu.remove()
-    //     } else {
-    //       target.innerHTML = ''
-    //       target.style.pointerEvents = 'none'
-    //     }
-    //   }
-    // })
+    target.addEventListener('click', (e: any) => {
+      const verticalMenu = document.querySelector('.vertical-menu')
+      if (e.target.className === 'overlay') {
+        if (verticalMenu) {
+          verticalMenu.remove()
+        } else {
+          target.innerHTML = ''
+          target.style.pointerEvents = 'none'
+        }
+      }
+    })
 
     document.addEventListener(
       'keydown',
@@ -167,33 +168,49 @@ export default class DayModal extends Component {
       nonOnce
     )
 
-    // target.querySelector('input')!.addEventListener('keyup', (e) => {
-    //   this.setState({ title: target.querySelector('input')!.value })
-    // })
-    // target.querySelector('.start-time')!.addEventListener('click', () => {
-    //   !target.querySelector('.vertical-menu') &&
-    //     new TimeDropdown(target.querySelector('.start-time')!, this.handleClick)
-    // })
-    // target.querySelector('.end-time')!.addEventListener('click', () => {
-    //   !target.querySelector('.vertical-menu') &&
-    //     new TimeDropdown(target.querySelector('.end-time')!, this.handleClick)
-    // })
+    target.addEventListener('keyup', (e: any) => {
+      if (e.target.classList.contains('title-input'))
+        this.setState({ title: target.querySelector('input')!.value })
+    })
+    target.addEventListener('click', (e: any) => {
+      let find = false
+      for (let tag of e.path) {
+        if (!find && tag.className === 'start-time') {
+          find = true
+        }
+      }
+      find &&
+        !target.querySelector('.vertical-menu') &&
+        new TimeDropdown(target.querySelector('.start-time')!, this.handleClick)
+    })
+
+    target.addEventListener('click', (e: any) => {
+      let find = false
+      for (let tag of e.path) {
+        if (!find && tag.className === 'end-time') {
+          find = true
+        }
+      }
+      find &&
+        !target.querySelector('.vertical-menu') &&
+        new TimeDropdown(target.querySelector('.end-time')!, this.handleClick)
+    })
   }
 
-  // handleClick(e: any) {
-  //   const target = document.querySelector('.modal-wrapper')!
-  //   target.querySelector('.start-time .vertical-menu')
-  //     ? this.setState({ startTime: e.target.innerText })
-  //     : this.setState({ endTime: e.target.innerText })
-  //   target.querySelector('.vertial-menu')?.remove()
-  //   e.stopPropagation()
-  // }
+  handleClick(e: any) {
+    const target = document.querySelector('.modal-wrapper')!
+    target.querySelector('.start-time .vertical-menu')
+      ? this.setState({ startTime: e.target.innerText })
+      : this.setState({ endTime: e.target.innerText })
+    target.querySelector('.vertial-menu')?.remove()
+    e.stopPropagation()
+  }
 
-  // setState(newState: object) {
-  //   this.state = { ...this.state, ...newState }
-  //   this.render()
-  //   if (newState.hasOwnProperty('title')) {
-  //     this.modal.querySelector('input')?.focus()
-  //   }
-  // }
+  setState(newState: object) {
+    this.state = { ...this.state, ...newState }
+    this.render()
+    if (newState.hasOwnProperty('title')) {
+      this.$target.querySelector('input')?.focus()
+    }
+  }
 }
