@@ -114,7 +114,7 @@ export default class DayModal extends Component {
       once: false,
     }
 
-    target.addEventListener('click', (e: any) => {
+    function handleModalOutsideClick(e: any) {
       const verticalMenu = document.querySelector('.vertical-menu')
       if (e.target.className === 'overlay') {
         if (verticalMenu) {
@@ -122,9 +122,12 @@ export default class DayModal extends Component {
         } else {
           target.innerHTML = ''
           target.style.pointerEvents = 'none'
+          target.removeEventListener('click', handleModalOutsideClick)
         }
       }
-    })
+    }
+
+    target.addEventListener('click', handleModalOutsideClick)
 
     document.addEventListener(
       'keydown',
