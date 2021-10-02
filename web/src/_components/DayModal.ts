@@ -11,7 +11,7 @@ export default class DayModal extends Component {
     this.targetBeforeAddingEventListener = $target
     $target.style.pointerEvents = 'auto'
 
-    this.handleClick = this.handleClick.bind(this)
+    // this.handleClick = this.handleClick.bind(this)
     this.render()
   }
 
@@ -105,7 +105,6 @@ export default class DayModal extends Component {
   }
 
   setEvent() {
-    console.log('setEvent')
     let target = this.$target
     const once = {
       once: true,
@@ -114,45 +113,42 @@ export default class DayModal extends Component {
       once: false,
     }
 
-    target.addEventListener('click', (e: any) => {
-      const verticalMenu = document.querySelector('.vertical-menu')
-      if (e.target.className === 'overlay') {
-        if (verticalMenu) {
-          verticalMenu.remove()
-        } else {
-          target = this.targetBeforeAddingEventListener
-          target.style.pointerEvents = 'none'
-        }
-      }
-    })
+    // target.addEventListener('click', (e: any) => {
+    //   const verticalMenu = document.querySelector('.vertical-menu')
+    //   if (e.target.className === 'overlay') {
+    //     if (verticalMenu) {
+    //       verticalMenu.remove()
+    //     } else {
+    //       target.innerHTML = ''
+    //       target.style.pointerEvents = 'none'
+    //     }
+    //   }
+    // })
 
     document.addEventListener(
       'keydown',
       (e) => {
         if (e.key === 'Escape') {
-          target = this.targetBeforeAddingEventListener
-          target.style.pointerEvents = 'none'
-        }
-      },
-      nonOnce
-    )
-
-    target.addEventListener(
-      'click',
-      (e: any) => {
-        if (e.target.classList.contains('button-cancel')) {
           target.innerHTML = ''
           target.style.pointerEvents = 'none'
         }
       },
-      nonOnce
+      once
     )
+
+    function handleCancelClick(e: any) {
+      if (e.target.classList.contains('button-cancel')) {
+        target.innerHTML = ''
+        target.style.pointerEvents = 'none'
+      }
+    }
+
+    target.addEventListener('click', handleCancelClick, once)
 
     target.addEventListener(
       'click',
       async (e: any) => {
         if (e.target.classList.contains('button-save')) {
-          console.log('clicked button save')
           const requestBody = this.state
           const res = await api.createPlan(requestBody)
           if (res.ok) {
@@ -164,10 +160,11 @@ export default class DayModal extends Component {
               '.error-modal-wrapper'
             )!
             new ErrorModal(errorModalTarget, res.msg)
+            target.addEventListener('click', handleCancelClick, once)
           }
         }
       },
-      once
+      nonOnce
     )
 
     // target.querySelector('input')!.addEventListener('keyup', (e) => {
@@ -183,14 +180,14 @@ export default class DayModal extends Component {
     // })
   }
 
-  handleClick(e: any) {
-    const target = document.querySelector('.modal-wrapper')!
-    target.querySelector('.start-time .vertical-menu')
-      ? this.setState({ startTime: e.target.innerText })
-      : this.setState({ endTime: e.target.innerText })
-    target.querySelector('.vertial-menu')?.remove()
-    e.stopPropagation()
-  }
+  // handleClick(e: any) {
+  //   const target = document.querySelector('.modal-wrapper')!
+  //   target.querySelector('.start-time .vertical-menu')
+  //     ? this.setState({ startTime: e.target.innerText })
+  //     : this.setState({ endTime: e.target.innerText })
+  //   target.querySelector('.vertial-menu')?.remove()
+  //   e.stopPropagation()
+  // }
 
   // setState(newState: object) {
   //   this.state = { ...this.state, ...newState }

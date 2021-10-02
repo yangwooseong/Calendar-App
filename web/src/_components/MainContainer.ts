@@ -98,7 +98,6 @@ export default class MainContainer extends Component {
 
   setEvent() {
     this.$target.addEventListener('click', (e: any) => {
-      console.log('here')
       if (e.target.classList.contains('one-day')) {
         const modalWrapper: HTMLElement =
           document.querySelector('.modal-wrapper')!
