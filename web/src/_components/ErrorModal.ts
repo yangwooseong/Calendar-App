@@ -6,6 +6,8 @@ export default class ErrorModal extends Component {
   constructor($target: HTMLElement, msg: string) {
     super($target, msg)
 
+    $target.style.pointerEvents = 'auto'
+
     this.msg = msg
   }
 
@@ -41,13 +43,10 @@ export default class ErrorModal extends Component {
   }
 
   setEvent() {
-    console.log(this.$target)
-
-    const modalWrapperTarget = document.querySelector('.modal-wrapper')
     this.$target.addEventListener('click', (e: any) => {
-      console.log(e.target.className)
-      if (e.target.className.contains('ok-button')) {
+      if (e.target.classList.contains('ok-button')) {
         this.$target.innerHTML = ''
+        this.$target.style.pointerEvents = 'none'
       }
     })
   }

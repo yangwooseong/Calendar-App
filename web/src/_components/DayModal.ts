@@ -4,9 +4,11 @@ import ErrorModal from './ErrorModal'
 import Component from '../_core/Component'
 
 export default class DayModal extends Component {
+  targetBeforeAddingEventListener
   constructor($target: HTMLElement, props: any) {
     super($target, props)
 
+    this.targetBeforeAddingEventListener = $target
     $target.style.pointerEvents = 'auto'
 
     this.handleClick = this.handleClick.bind(this)
@@ -103,7 +105,14 @@ export default class DayModal extends Component {
   }
 
   setEvent() {
-    const target = this.$target
+    console.log('setEvent')
+    let target = this.$target
+    const once = {
+      once: true,
+    }
+    const nonOnce = {
+      once: false,
+    }
 
     target.addEventListener('click', (e: any) => {
       const verticalMenu = document.querySelector('.vertical-menu')
@@ -111,38 +120,55 @@ export default class DayModal extends Component {
         if (verticalMenu) {
           verticalMenu.remove()
         } else {
-          target.innerHTML = ''
+          target = this.targetBeforeAddingEventListener
           target.style.pointerEvents = 'none'
         }
       }
     })
 
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        target.innerHTML = ''
-      }
-    })
-
-    target.addEventListener('click', (e: any) => {
-      if (e.target.classList.contains('button-cancel')) {
-        target.innerHTML = ''
-      }
-    })
-
-    target.addEventListener('click', async (e: any) => {
-      if (e.target.classList.contains('button-save')) {
-        const requestBody = this.state
-        const res = await api.createPlan(requestBody)
-        if (res.ok) {
-          target.innerHTML = ''
-        } else {
-          const errorModalTarget: HTMLElement = document.querySelector(
-            '.error-modal-wrapper'
-          )!
-          new ErrorModal(errorModalTarget, res.msg)
+    document.addEventListener(
+      'keydown',
+      (e) => {
+        if (e.key === 'Escape') {
+          target = this.targetBeforeAddingEventListener
+          target.style.pointerEvents = 'none'
         }
-      }
-    })
+      },
+      nonOnce
+    )
+
+    target.addEventListener(
+      'click',
+      (e: any) => {
+        if (e.target.classList.contains('button-cancel')) {
+          target.innerHTML = ''
+          target.style.pointerEvents = 'none'
+        }
+      },
+      nonOnce
+    )
+
+    target.addEventListener(
+      'click',
+      async (e: any) => {
+        if (e.target.classList.contains('button-save')) {
+          console.log('clicked button save')
+          const requestBody = this.state
+          const res = await api.createPlan(requestBody)
+          if (res.ok) {
+            target.innerHTML = ''
+            target.style.pointerEvents = 'none'
+          } else {
+            console.log('error modal')
+            const errorModalTarget: HTMLElement = document.querySelector(
+              '.error-modal-wrapper'
+            )!
+            new ErrorModal(errorModalTarget, res.msg)
+          }
+        }
+      },
+      once
+    )
 
     // target.querySelector('input')!.addEventListener('keyup', (e) => {
     //   this.setState({ title: target.querySelector('input')!.value })
