@@ -69,6 +69,9 @@ export default class DayModal extends Component {
     const startScroll = document.createElement('div')
     startScroll.innerText = this.state.startTime
     startTime.appendChild(startScroll)
+    const startDropdownTarget = document.createElement('div')
+    startDropdownTarget.className = 'start-dropdown'
+    startTime.appendChild(startDropdownTarget)
 
     const end = document.createElement('div')
     end.className = 'end'
@@ -83,6 +86,9 @@ export default class DayModal extends Component {
     const endScroll = document.createElement('div')
     endScroll.innerText = this.state.endTime
     endTime.appendChild(endScroll)
+    const endDropdownTarget = document.createElement('div')
+    endDropdownTarget.className = 'end-dropdown'
+    endTime.appendChild(endDropdownTarget)
 
     content.appendChild(end)
 
@@ -147,29 +153,25 @@ export default class DayModal extends Component {
       }
     }
 
-    target.addEventListener('click', handleCancelClick, once)
+    target.addEventListener('click', handleCancelClick)
 
-    target.addEventListener(
-      'click',
-      async (e: any) => {
-        if (e.target.classList.contains('button-save')) {
-          const requestBody = this.state
-          const res = await api.createPlan(requestBody)
-          if (res.ok) {
-            target.innerHTML = ''
-            target.style.pointerEvents = 'none'
-          } else {
-            console.log('error modal')
-            const errorModalTarget: HTMLElement = document.querySelector(
-              '.error-modal-wrapper'
-            )!
-            new ErrorModal(errorModalTarget, res.msg)
-            target.addEventListener('click', handleCancelClick, once)
-          }
+    target.addEventListener('click', async (e: any) => {
+      if (e.target.classList.contains('button-save')) {
+        const requestBody = this.state
+        const res = await api.createPlan(requestBody)
+        if (res.ok) {
+          target.innerHTML = ''
+          target.style.pointerEvents = 'none'
+        } else {
+          console.log('error modal')
+          const errorModalTarget: HTMLElement = document.querySelector(
+            '.error-modal-wrapper'
+          )!
+          new ErrorModal(errorModalTarget, res.msg)
+          target.addEventListener('click', handleCancelClick, once)
         }
-      },
-      nonOnce
-    )
+      }
+    }) // FIX ME : how to add removeEventListener properly
 
     target.addEventListener('keyup', (e: any) => {
       if (e.target.classList.contains('title-input'))
@@ -184,7 +186,10 @@ export default class DayModal extends Component {
       }
       find &&
         !target.querySelector('.vertical-menu') &&
-        new TimeDropdown(target.querySelector('.start-time')!, this.handleClick)
+        new TimeDropdown(
+          target.querySelector('.start-dropdown')!,
+          this.handleClick
+        )
     })
 
     target.addEventListener('click', (e: any) => {
@@ -196,13 +201,16 @@ export default class DayModal extends Component {
       }
       find &&
         !target.querySelector('.vertical-menu') &&
-        new TimeDropdown(target.querySelector('.end-time')!, this.handleClick)
+        new TimeDropdown(
+          target.querySelector('.end-dropdown')!,
+          this.handleClick
+        )
     })
   }
 
   handleClick(e: any) {
     const target = document.querySelector('.modal-wrapper')!
-    target.querySelector('.start-time .vertical-menu')
+    target.querySelector('.start-dropdown .vertical-menu')
       ? this.setState({ startTime: e.target.innerText })
       : this.setState({ endTime: e.target.innerText })
     target.querySelector('.vertial-menu')?.remove()

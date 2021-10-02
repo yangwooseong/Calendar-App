@@ -1,19 +1,25 @@
 // https://www.youtube.com/watch?v=MY5KI2XV0HM
 
-export default class TimeDropdown {
-  verticalMenu: HTMLUListElement
+import Component from '../_core/Component'
+
+export default class TimeDropdown extends Component {
   handleClick: any
 
   constructor($target: HTMLElement, handleClick: any) {
-    const verticalMenu = document.createElement('ul')
-    verticalMenu.className = 'vertical-menu'
-    $target.appendChild(verticalMenu)
-    this.verticalMenu = verticalMenu
+    super($target, handleClick)
+
     this.handleClick = handleClick
 
     this.render()
   }
+
   template() {
+    const verticalMenu = document.createElement('ul')
+    verticalMenu.className = 'vertical-menu'
+    return `<ul class='vertical-menu'></ul>`
+  }
+
+  appendChildren() {
     const timeArr = []
     for (let i = 0; i < 12; i++) {
       const time = ('0' + i.toString()).slice(-2)
@@ -25,23 +31,17 @@ export default class TimeDropdown {
     }
     timeArr.forEach((time) => {
       const timeLiTag = document.createElement('li')
+      timeLiTag.className = 'li'
       timeLiTag.innerText = time
-      this.verticalMenu.appendChild(timeLiTag)
+      this.$target.querySelector('.vertical-menu')?.appendChild(timeLiTag)
     })
   }
 
   setEvent() {
-    const modalWrapper = document.querySelector('.modal-wrapper')!
-    const liTags = Array.from(
-      this.verticalMenu.querySelectorAll('li')
-    ) as Array<HTMLLIElement>
-    liTags.forEach((li: HTMLLIElement, idx) => {
-      li.addEventListener('click', this.handleClick)
+    this.$target.addEventListener('click', (e: any) => {
+      if (e.target.classList.contains('li')) {
+        this.handleClick(e)
+      }
     })
-  }
-
-  render() {
-    this.template()
-    this.setEvent()
   }
 }
