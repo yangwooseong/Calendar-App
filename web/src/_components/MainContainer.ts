@@ -1,6 +1,7 @@
 import OneDay from './OneDay'
 import Component from '../_core/Component'
 import DayModal from './DayModal'
+import api from './api'
 
 export default class MainContainer extends Component {
   constructor($target: HTMLElement, props: any) {
@@ -32,7 +33,34 @@ export default class MainContainer extends Component {
     })
   }
 
-  addCalendarContent($target: HTMLElement) {
+  async addCalendarContent($target: HTMLElement) {
+    const getDateTime = (year: number, month: number, date: number) => {
+      return (
+        year.toString() +
+        ('0' + (month + 1).toString()).slice(-2) +
+        ('0' + date.toString()).slice(-2)
+      )
+    }
+
+    const getDateRange = (date: number) => {
+      let { year, month } = this.props
+      month = month - 1
+
+      const newYear = month === 0 ? year - 1 : year
+      const newMonth = month === 0 ? 11 : month - 1
+
+      let tmp = new Date(newYear, newMonth, date)
+      const firstDate = getDateTime(newYear, newMonth, date)
+      const lastDate = new Date(tmp.setDate(tmp.getDate() + 34))
+
+      return [
+        firstDate,
+        lastDate.getFullYear().toString() +
+          ('0' + (lastDate.getMonth() + 1).toString()).slice(-2) +
+          ('0' + lastDate.getDate().toString()).slice(-2),
+      ]
+    }
+
     const content = document.createElement('section')
     content.className = 'calendar-content'
     $target.appendChild(content)
@@ -49,6 +77,12 @@ export default class MainContainer extends Component {
     )
     const lastSundayDate = lastSundayOfLastMonth.getDate()
 
+    const dateRange = getDateRange(lastSundayDate)
+    const res = await api.planList({
+      startDate: dateRange[0],
+      endDate: dateRange[1],
+    })
+
     // 지난 달
     for (let i = 0; i < dayOfFirstDate; i++) {
       const oneday = document.createElement('span')
@@ -57,11 +91,12 @@ export default class MainContainer extends Component {
 
       const newYear = month === 0 ? year - 1 : year
       const newMonth = month === 0 ? 11 : month - 1
-      const dateTime =
-        newYear.toString() +
-        ('0' + (newMonth + 1).toString()).slice(-2) +
-        ('0' + (lastSundayDate + i).toString()).slice(-2)
-      new OneDay(oneday, dateTime)
+      const dateTime = getDateTime(newYear, newMonth, lastSundayDate + i)
+      const oneDayProps = {
+        dateTime,
+        plans: res[dateTime],
+      }
+      new OneDay(oneday, oneDayProps)
     }
     if (dayOfFirstDate + lastDate >= 35) {
       lastDate = lastDate - (dayOfFirstDate + lastDate - 35)
@@ -73,11 +108,12 @@ export default class MainContainer extends Component {
       oneday.className = 'one-day'
       content.appendChild(oneday)
 
-      const dateTime =
-        year.toString() +
-        ('0' + (month + 1).toString()).slice(-2) +
-        ('0' + i.toString()).slice(-2)
-      new OneDay(oneday, dateTime)
+      const dateTime = getDateTime(year, month, i)
+      const oneDayProps = {
+        dateTime,
+        plans: res[dateTime],
+      }
+      new OneDay(oneday, oneDayProps)
     }
 
     // 다음 달
@@ -88,11 +124,12 @@ export default class MainContainer extends Component {
 
       const newYear = month === 11 ? year + 1 : year
       const newMonth = month === 11 ? 0 : month + 1
-      const dateTime =
-        newYear.toString() +
-        ('0' + (newMonth + 1).toString()).slice(-2) +
-        ('0' + i.toString()).slice(-2)
-      new OneDay(oneday, dateTime)
+      const dateTime = getDateTime(newYear, newMonth, i)
+      const oneDayProps = {
+        dateTime,
+        plans: res[dateTime],
+      }
+      new OneDay(oneday, oneDayProps)
     }
   }
 

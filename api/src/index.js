@@ -62,8 +62,24 @@ app.post('/plans', async (req, res) => {
 
 app.post('/request_plan', async (req, res) => {
   try {
-    const { month, date } = req.body
-  } catch (err) {}
+    const { startDate, endDate } = req.body
+    const planList = await pool.query(
+      'SELECT * FROM plans \
+       WHERE date between $1 and $2 \
+       ORDER BY date asc',
+      [startDate, endDate]
+    )
+    const queryResult = planList.rows
+
+    result = {}
+    queryResult.map((val) => {
+      const date = val.date
+      result[date] = result[date] === undefined ? [val] : [...result[date], val]
+    })
+    res.json(result)
+  } catch (err) {
+    throw err
+  }
 })
 
 app.listen(5000, () => {

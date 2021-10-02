@@ -27,6 +27,7 @@ export default class DayModal extends Component {
 
   appendChildren() {
     const modalTarget = this.$target
+    const { date } = this.state
 
     const overlay = document.createElement('div')
     overlay.className = 'overlay'
@@ -60,7 +61,7 @@ export default class DayModal extends Component {
     content.appendChild(start)
     start.innerHTML = `<div>
     <span>시작 날짜</span>
-    <div>11/13/2018</div>
+    <div>${date.slice(-2)}/${date.slice(-4, -2)}/${date.slice(0, -4)}
     </div>`
     const startTime = document.createElement('div')
     startTime.className = 'start-time'
@@ -77,7 +78,7 @@ export default class DayModal extends Component {
     end.className = 'end'
     end.innerHTML = `<div>
     <span>종료 날짜</span>
-    <div>11/13/2018</div>
+    <div>${date.slice(-2)}/${date.slice(-4, -2)}/${date.slice(0, -4)}
     </div>`
     const endTime = document.createElement('div')
     endTime.className = 'end-time'
@@ -110,7 +111,6 @@ export default class DayModal extends Component {
       footer.appendChild(button)
     }
   }
-
   setEvent() {
     let target = this.$target
     const once = {
