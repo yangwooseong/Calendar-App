@@ -155,24 +155,30 @@ export default class DayModal extends Component {
 
     target.addEventListener('click', handleCancelClick)
 
-    target.addEventListener('click', async (e: any) => {
-      if (e.target.classList.contains('button-save')) {
-        const requestBody = this.state
-        const res = await api.createPlan(requestBody)
-        if (res.ok) {
-          target.innerHTML = ''
-          target.style.pointerEvents = 'none'
-          this.props.requestData(true)
-        } else {
-          console.log('error modal')
-          const errorModalTarget: HTMLElement = document.querySelector(
-            '.error-modal-wrapper'
-          )!
-          new ErrorModal(errorModalTarget, res.msg)
-          target.addEventListener('click', handleCancelClick, once)
+    target.addEventListener(
+      'click',
+      async (e: any) => {
+        if (e.target.classList.contains('button-save')) {
+          const requestBody = this.state
+          const res = await api.createPlan(requestBody)
+          console.log('called')
+          if (res.ok) {
+            target.innerHTML = ''
+            target.style.pointerEvents = 'none'
+            this.props.requestData(true)
+            console.log('request call')
+          } else {
+            console.log('error')
+            const errorModalTarget: HTMLElement = document.querySelector(
+              '.error-modal-wrapper'
+            )!
+            new ErrorModal(errorModalTarget, res.msg)
+            target.addEventListener('click', handleCancelClick, once)
+          }
         }
-      }
-    }) // FIX ME : how to add removeEventListener properly
+      },
+      once
+    ) // FIX ME : how to add removeEventListener properly
 
     target.addEventListener('keyup', (e: any) => {
       if (e.target.classList.contains('title-input'))

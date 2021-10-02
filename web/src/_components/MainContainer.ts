@@ -37,7 +37,6 @@ export default class MainContainer extends Component {
       startDate: range[0],
       endDate: range[1],
     })
-    console.log('called')
     if (Object.keys(this.state.dateRange).length === 0 || update) {
       this.setState({ dateRange })
     }
@@ -106,7 +105,6 @@ export default class MainContainer extends Component {
     )
     const lastSundayDate = lastSundayOfLastMonth.getDate()
 
-    const dateRange = this.getDateRange(lastSundayDate)
     await this.requestData()
     // 지난 달
     for (let i = 0; i < dayOfFirstDate; i++) {
@@ -161,7 +159,6 @@ export default class MainContainer extends Component {
   setEvent() {
     this.$target.addEventListener('click', (e: any) => {
       if (e.target.classList.contains('one-day')) {
-        console.log(e.target)
         const modalWrapper: HTMLElement =
           document.querySelector('.modal-wrapper')!
         const dateTime =

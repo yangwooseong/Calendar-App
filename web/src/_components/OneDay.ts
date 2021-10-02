@@ -15,10 +15,10 @@ export default class OneDay extends Component {
     }
     </span>`
 
-    console.log(this.props.plans)
     if (!this.props.plans) return
 
     let displayPlans: Array<number> = []
+    this.props.plans.sort((a: any, b: any) => a.time - b.time)
     let start: number
     this.props.plans.map((val: any, idx: number) => {
       if (idx === 0) {

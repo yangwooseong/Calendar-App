@@ -43,14 +43,16 @@ app.post('/plans', async (req, res) => {
 
     const resMsg = await hanldeTimePeriodError(date, start, end)
 
-    console.log(resMsg, req.body)
+    console.log(resMsg, date, start, end)
 
-    for (let time = start; time < end; time++) {
-      await pool.query(
-        'INSERT INTO plans (title, date, time ) \
-         VALUES ($1, $2, $3)',
-        [title, date, time]
-      )
+    if (resMsg.ok) {
+      for (let time = start; time < end; time++) {
+        await pool.query(
+          'INSERT INTO plans (title, date, time ) \
+           VALUES ($1, $2, $3)',
+          [title, date, time]
+        )
+      }
     }
     res.json({ ...resMsg })
   } catch (err) {
@@ -68,12 +70,16 @@ app.post('/request_plan', async (req, res) => {
       [startDate, endDate]
     )
     const queryResult = planList.rows
+    console.log(queryResult)
 
     result = {}
     queryResult.map((val) => {
       const date = val.date
       result[date] = result[date] === undefined ? [val] : [...result[date], val]
     })
+    if (Object.keys(result).length === 0) {
+      result = { startDate: '', endDate: '' }
+    }
     res.json(result)
   } catch (err) {
     throw err
