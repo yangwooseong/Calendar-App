@@ -7,6 +7,8 @@ export default class DayModal extends Component {
   constructor($target: HTMLElement, props: any) {
     super($target, props)
 
+    $target.style.pointerEvents = 'auto'
+
     this.handleClick = this.handleClick.bind(this)
     this.render()
   }
@@ -87,51 +89,60 @@ export default class DayModal extends Component {
     modal.appendChild(footer)
     const stringArr = ['닫기', '저장', '수정']
     const num = this.props.type === 'Add' ? 2 : 3
+    const obj: { [key: string]: string } = {
+      0: 'cancel',
+      1: 'save',
+      2: 'change',
+    }
     for (let i = 0; i < num; i++) {
       const button = document.createElement('button')
       button.innerText = stringArr[i]
-      button.id = 'id' + i.toString()
+      button.className = `button-${obj[i.toString()]}`
       footer.appendChild(button)
     }
   }
 
   setEvent() {
     const target = this.$target
-    const overlay = document.querySelector('.overlay')!
-    const modal = document.querySelector('.modal')!
 
     target.addEventListener('click', (e: any) => {
       const verticalMenu = document.querySelector('.vertical-menu')
       if (e.target.className === 'overlay') {
-        verticalMenu ? verticalMenu.remove() : target.remove()
+        if (verticalMenu) {
+          verticalMenu.remove()
+        } else {
+          target.innerHTML = ''
+          target.style.pointerEvents = 'none'
+        }
       }
     })
 
     document.addEventListener('keydown', (e) => {
-      e.key === 'Escape' && target.remove()
+      if (e.key === 'Escape') {
+        target.innerHTML = ''
+      }
     })
 
     target.addEventListener('click', (e: any) => {
-      console.log(e.target)
-      if (e.target.classList.contains('footer')) {
-        console.log('he')
+      if (e.target.classList.contains('button-cancel')) {
+        target.innerHTML = ''
       }
     })
-    // const closeButton = target.querySelector('footer #id0')!
-    // closeButton.addEventListener('click', () => {
-    //   target.remove()
-    // })
-    // const saveButton = target.querySelector('footer #id1')!
-    // saveButton.addEventListener('click', async () => {
-    //   const requestBody = this.state
-    //   const res = await api.createPlan(requestBody)
-    //   if (res.ok) target.remove()
-    //   else {
-    //     const mainPage: HTMLElement = document.querySelector('.main-page')!
-    //     new ErrorModal(mainPage, res.msg)
-    //     console.log('modal here')
-    //   }
-    // })
+
+    target.addEventListener('click', async (e: any) => {
+      if (e.target.classList.contains('button-save')) {
+        const requestBody = this.state
+        const res = await api.createPlan(requestBody)
+        if (res.ok) {
+          target.innerHTML = ''
+        } else {
+          const errorModalTarget: HTMLElement = document.querySelector(
+            '.error-modal-wrapper'
+          )!
+          new ErrorModal(errorModalTarget, res.msg)
+        }
+      }
+    })
 
     // target.querySelector('input')!.addEventListener('keyup', (e) => {
     //   this.setState({ title: target.querySelector('input')!.value })

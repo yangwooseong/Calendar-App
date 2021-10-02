@@ -43,6 +43,7 @@ export default class MainPage extends Component {
       <header class='header'></header>
       <div class='main-container'></div>
       <div class='modal-wrapper'></div>
+      <div class='error-modal-wrapper'></div>
     `
   }
 

@@ -5,9 +5,10 @@
   bottom: 0;
   right: 0;
   display: flex;
-  z-index: 2;
+  // z-index: 4;
   justify-content: center;
   align-items: center;
+  pointer-events: none;
 
   .overlay {
     width: 100%;
@@ -36,7 +37,7 @@
     margin: auto;
     padding-top: 20px;
   }
-  .button {
+  .ok-button {
     width: 20%;
     margin: auto;
     background-color: orange;

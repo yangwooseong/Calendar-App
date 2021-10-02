@@ -98,10 +98,10 @@ export default class MainContainer extends Component {
 
   setEvent() {
     this.$target.addEventListener('click', (e: any) => {
-      console.log(e.target)
+      console.log('here')
       if (e.target.classList.contains('one-day')) {
-        const mainPage: HTMLElement = document.querySelector('.modal-wrapper')!
-        console.log(mainPage)
+        const modalWrapper: HTMLElement =
+          document.querySelector('.modal-wrapper')!
         const dateTime =
           this.props.year +
           ('0' + this.props.month).slice(-2) +
@@ -110,7 +110,7 @@ export default class MainContainer extends Component {
           type: 'Add',
           dateTime,
         }
-        new DayModal(mainPage, dayModalProps)
+        new DayModal(modalWrapper, dayModalProps)
       }
     })
   }
